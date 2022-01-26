@@ -3,6 +3,15 @@ import React from "react";
 import { useRouter } from "next/router";
 import appConfig from "../config.json";
 
+async function getNome(user) {
+  const response = await fetch(`https://api.github.com/users/${user}`);
+  const dados = await response.json();
+  if (dados.message) {
+    return false;
+  }
+  return dados.nome;
+}
+
 function Titulo(props) {
   const Tag = props.tag || "h1";
   return (
@@ -19,31 +28,12 @@ function Titulo(props) {
   );
 }
 
-//function HomePage() {
-//  return (
-//   <div>
-//      <GlobalStyle />
-//      <Titulo tag="h2">Boas vindas de volta!</Titulo>
-//     <h2>Discord - Alura Matrix</h2>
-//   </div>
-//  );
-//}
-//export default HomePage;
-
-function sizeUserName() {
-  const sizeName = 0;
-  const [username, setUsername] = React.useState("loacir-zen");
-  if (username.length > 2) {
-    appConfig.statusVisibility.visibility = "visible";
-  }
-}
-
 export default function PaginaInicial() {
-  //const username = "loacir-zen";
-  const [username, setUsername] = React.useState("loac");
+  const [username, setUsername] = React.useState("loacir-zen");
+  const [nome, setNome] = React.useState("");
   const [statusVisivel, setStatusVisivel] = React.useState("hidden");
+  const [found, setFound] = React.useState(true);
   const roteamento = useRouter();
-  //const stateAtual = "enable";
 
   return (
     <>
@@ -76,6 +66,7 @@ export default function PaginaInicial() {
             margin: "16px",
             boxShadow: "0 2px 10px 0 rgb(0 0 0 / 20%)",
             backgroundColor: appConfig.theme.colors.neutrals[700],
+            opacity: 0.9,
           }}
         >
           {/* Formulário */}
@@ -124,22 +115,36 @@ export default function PaginaInicial() {
             <TextField
               value={username}
               onChange={function handler(event) {
-                console.log("usuário digitou", event.target.value);
+                const valor = event.target.value;
+                setFound(true);
 
-                console.log("onclick", event.target.value.length);
-                const contChar = event.target.value.length;
-                if (contChar + 1 > 2) {
+                if (valor.length > 2) {
                   appConfig.statusVisibility.visibility = "visible";
-                } else if (contChar <= 2) {
+                  getNome(valor).then((e) => {
+                    if (e) {
+                      setNome(e);
+                      setFound(true);
+                    } else {
+                      setNome("");
+                      setFound(false);
+                    }
+                  });
+                } else {
+                  setNome("");
+                  setFound(true);
                   appConfig.statusVisibility.visibility = "hidden";
                 }
 
                 console.log("O status visivel é: ", statusVisivel);
                 //Onde está o valor?
-                const valor = event.target.value;
+                //const valor = event.target.value;
                 //Trocar o valor da variável
                 //através do React e avise quem precisa
+
                 setUsername(valor);
+                setNome(valor);
+
+                console.log("Meu nome de usuário", getNome(valor));
               }}
               fullWidth
               textFieldColors={{
@@ -154,9 +159,7 @@ export default function PaginaInicial() {
             <Button
               type="submit"
               label="Entrar"
-              styleSheet={{
-                visibility: appConfig.statusVisibility.visibility,
-              }}
+              disabled={username.length < 3}
               fullWidth
               buttonColors={{
                 contrastColor: appConfig.theme.colors.neutrals["000"],
@@ -185,12 +188,28 @@ export default function PaginaInicial() {
               minHeight: "240px",
             }}
           >
+            <Text
+              variant="body4"
+              styleSheet={{
+                color: appConfig.theme.colors.neutrals[200],
+                padding: "10px 10px",
+                borderRadius: "1000px",
+                fontSize: 10,
+              }}
+            >
+              {nome}
+            </Text>
             <Image
               styleSheet={{
                 borderRadius: "50%",
                 marginBottom: "16px",
+                border: "1px solid",
+                borderColor: appConfig.theme.colors.primary[500],
               }}
               src={`https://github.com/${username}.png`}
+              onError={function (error) {
+                error.target.src = `https://icons.iconarchive.com/icons/custom-icon-design/silky-line-user/256/user-delete-icon.png`;
+              }}
             />
             <Text
               variant="body4"
