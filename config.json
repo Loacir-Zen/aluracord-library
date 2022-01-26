@@ -37,5 +37,8 @@
         "999": "#080A0C"
       }
     }
+  },
+  "statusVisibility": {
+    "visibility": "visible"
   }
 }

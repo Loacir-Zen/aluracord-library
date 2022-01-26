@@ -30,10 +30,20 @@ function Titulo(props) {
 //}
 //export default HomePage;
 
+function sizeUserName() {
+  const sizeName = 0;
+  const [username, setUsername] = React.useState("loacir-zen");
+  if (username.length > 2) {
+    appConfig.statusVisibility.visibility = "visible";
+  }
+}
+
 export default function PaginaInicial() {
   //const username = "loacir-zen";
-  const [username, setUsername] = React.useState("loacir-zen");
+  const [username, setUsername] = React.useState("loac");
+  const [statusVisivel, setStatusVisivel] = React.useState("hidden");
   const roteamento = useRouter();
+  //const stateAtual = "enable";
 
   return (
     <>
@@ -115,6 +125,16 @@ export default function PaginaInicial() {
               value={username}
               onChange={function handler(event) {
                 console.log("usuário digitou", event.target.value);
+
+                console.log("onclick", event.target.value.length);
+                const contChar = event.target.value.length;
+                if (contChar + 1 > 2) {
+                  appConfig.statusVisibility.visibility = "visible";
+                } else if (contChar <= 2) {
+                  appConfig.statusVisibility.visibility = "hidden";
+                }
+
+                console.log("O status visivel é: ", statusVisivel);
                 //Onde está o valor?
                 const valor = event.target.value;
                 //Trocar o valor da variável
@@ -134,6 +154,9 @@ export default function PaginaInicial() {
             <Button
               type="submit"
               label="Entrar"
+              styleSheet={{
+                visibility: appConfig.statusVisibility.visibility,
+              }}
               fullWidth
               buttonColors={{
                 contrastColor: appConfig.theme.colors.neutrals["000"],
@@ -150,6 +173,7 @@ export default function PaginaInicial() {
             styleSheet={{
               display: "flex",
               flexDirection: "column",
+              visibility: appConfig.statusVisibility.visibility,
               alignItems: "center",
               maxWidth: "200px",
               padding: "16px",
