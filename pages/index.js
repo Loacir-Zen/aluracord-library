@@ -1,15 +1,16 @@
 import { Box, Button, Text, TextField, Image } from "@skynexui/components";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import appConfig from "../config.json";
+import axios from "axios";
 
 async function getNome(user) {
   const response = await fetch(`https://api.github.com/users/${user}`);
   const dados = await response.json();
   if (dados.message) {
-    return false;
+    // return false;
   }
-  return dados.nome;
+  return dados.name;
 }
 
 function Titulo(props) {
@@ -74,7 +75,6 @@ export default function PaginaInicial() {
             as="form"
             onSubmit={function (infosDoEvento) {
               infosDoEvento.preventDefault();
-              console.log("Alguém submeteu o form");
               roteamento.push("/chat");
               //window.location.href = "/chat";
             }}
@@ -116,7 +116,6 @@ export default function PaginaInicial() {
               value={username}
               onChange={function handler(event) {
                 const valor = event.target.value;
-                setFound(true);
 
                 if (valor.length > 2) {
                   appConfig.statusVisibility.visibility = "visible";
@@ -142,8 +141,6 @@ export default function PaginaInicial() {
                 //através do React e avise quem precisa
 
                 setUsername(valor);
-                setNome(valor);
-
                 console.log("Meu nome de usuário", getNome(valor));
               }}
               fullWidth
