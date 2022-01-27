@@ -28,6 +28,12 @@ export default function ChatPage() {
     setMensagem("");
   }
 
+  function handleDeletaMensagem(id) {
+    setListaDeMensagens(
+      listaDeMensagens.filter((mensagem) => mensagem.id !== id)
+    );
+  }
+
   return (
     <Box
       styleSheet={{
@@ -70,7 +76,10 @@ export default function ChatPage() {
             padding: "16px",
           }}
         >
-          <MessageList mensagens={listaDeMensagens} />
+          <MessageList
+            mensagens={listaDeMensagens}
+            handleDeletaMensagem={handleDeletaMensagem}
+          />
           {/* {listaDeMensagens.map((mensagemAtual) => {
                         return (
                             <li key={mensagemAtual.id}>
@@ -183,6 +192,21 @@ function MessageList(props) {
                   marginRight: "8px",
                 }}
                 src={`https://github.com/loacir-zen.png`}
+              />
+              <Image
+                onClick={(event) => {
+                  event.preventDefault();
+                  props.handleDeletaMensagem(mensagem.id);
+                }}
+                styleSheet={{
+                  width: "20px",
+                  height: "20px",
+                  borderRadius: "50%",
+                  display: "inline-block",
+                  marginRight: "8px",
+                  float: "right",
+                }}
+                src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH5NjBw0gKTELUKNmzyo31JR3K6m_Axx2auA&usqp=CAU`}
               />
               <Text tag="strong">{mensagem.de}</Text>
               <Text
