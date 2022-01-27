@@ -119,6 +119,31 @@ export default function ChatPage() {
                 color: appConfig.theme.colors.neutrals[200],
               }}
             />
+
+            <Button
+              type="submit"
+              label="Enviar"
+              fullWidth
+              onClick={(event) => {
+                event.preventDefault();
+                handleNovaMensagem(mensagem);
+              }}
+              buttonColors={{
+                contrastColor: appConfig.theme.colors.neutrals["000"],
+                mainColor: appConfig.theme.colors.primary[800],
+                mainColorLight: appConfig.theme.colors.primary[600],
+                mainColorStrong: appConfig.theme.colors.primary[900],
+              }}
+              styleSheet={{
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "20px",
+                backgroundPosition: "center",
+                height: "38px",
+
+                width: "58px",
+                marginTop: "-6px",
+              }}
+            />
           </Box>
         </Box>
       </Box>
@@ -193,6 +218,17 @@ function MessageList(props) {
                 }}
                 src={`https://github.com/loacir-zen.png`}
               />
+              <Text tag="strong">{mensagem.de}</Text>
+              <Text
+                styleSheet={{
+                  fontSize: "10px",
+                  marginLeft: "8px",
+                  color: appConfig.theme.colors.neutrals[300],
+                }}
+                tag="span"
+              >
+                {new Date().toLocaleDateString()}
+              </Text>
               <Image
                 onClick={(event) => {
                   event.preventDefault();
@@ -208,17 +244,6 @@ function MessageList(props) {
                 }}
                 src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH5NjBw0gKTELUKNmzyo31JR3K6m_Axx2auA&usqp=CAU`}
               />
-              <Text tag="strong">{mensagem.de}</Text>
-              <Text
-                styleSheet={{
-                  fontSize: "10px",
-                  marginLeft: "8px",
-                  color: appConfig.theme.colors.neutrals[300],
-                }}
-                tag="span"
-              >
-                {new Date().toLocaleDateString()}
-              </Text>
             </Box>
             {mensagem.texto}
           </Text>
