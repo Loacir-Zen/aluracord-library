@@ -1,10 +1,27 @@
 import { Box, Text, TextField, Image, Button } from "@skynexui/components";
 import React from "react";
 import appConfig from "../config.json";
+import { createClient } from "@supabase/supabase-js";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMxNjE1MSwiZXhwIjoxOTU4ODkyMTUxfQ.j3BnsebwF52f9Wowb-64isuGgv7j__FqNC73czR2BAo";
+const SUPABASE_URL = "https://xetwbojipbfetnfrgomf.supabase.co";
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function ChatPage() {
   const [mensagem, setMensagem] = React.useState("");
   const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
+
+  React.useEffect(() => {
+    supabaseClient
+      .from("mensagens")
+      .select("*")
+      .order("id", { ascending: false })
+      .then(({ data }) => {
+        console.log("Dados da Consulta: ", data);
+        setListaDeMensagens(data);
+      });
+  }, []);
 
   /*
     // Usuário
@@ -19,19 +36,37 @@ export default function ChatPage() {
     */
   function handleNovaMensagem(novaMensagem) {
     const mensagem = {
-      id: listaDeMensagens.length + 1,
+      //id: listaDeMensagens.length + 1,
       de: "loacir-zen",
       texto: novaMensagem,
     };
 
-    setListaDeMensagens([mensagem, ...listaDeMensagens]);
+    supabaseClient
+      .from("mensagens")
+      .insert([mensagem])
+      .then(({ data }) => {
+        //console.log("Criando mensagem", oQueTaVindoComoResposta);
+        setListaDeMensagens([data[0], ...listaDeMensagens]);
+      });
+    //
     setMensagem("");
   }
 
-  function handleDeletaMensagem(id) {
-    setListaDeMensagens(
-      listaDeMensagens.filter((mensagem) => mensagem.id !== id)
-    );
+  // function handleDeletaMensagem(id) {
+  //   setListaDeMensagens(
+  //     listaDeMensagens.filter((mensagem) => mensagem.id !== id)
+  //   );
+  // }
+
+  function handleDeletaMensagem(idMensagem) {
+    supabaseClient
+      .from("mensagens")
+      .delete()
+      .match({ id: idMensagem })
+      .then(({ data }) => {
+        //console.log("Criando mensagem", oQueTaVindoComoResposta);
+        setListaDeMensagens([data[0], ...listaDeMensagens]);
+      });
   }
 
   return (
@@ -216,7 +251,7 @@ function MessageList(props) {
                   display: "inline-block",
                   marginRight: "8px",
                 }}
-                src={`https://github.com/loacir-zen.png`}
+                src={`https://github.com/${mensagem.de}.png`}
               />
               <Text tag="strong">{mensagem.de}</Text>
               <Text

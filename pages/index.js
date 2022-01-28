@@ -10,6 +10,7 @@ async function getNome(user) {
   if (dados.message) {
     // return false;
   }
+
   return dados.name;
 }
 
@@ -31,7 +32,7 @@ function Titulo(props) {
 
 export default function PaginaInicial() {
   const [username, setUsername] = React.useState("loacir-zen");
-  const [nome, setNome] = React.useState("");
+  const [nome, setNome] = React.useState("Loacir Zen");
   const [statusVisivel, setStatusVisivel] = React.useState("hidden");
   const [found, setFound] = React.useState(true);
   const roteamento = useRouter();
@@ -117,19 +118,25 @@ export default function PaginaInicial() {
               onChange={function handler(event) {
                 const valor = event.target.value;
 
+                async function getNome(user) {
+                  const response = await fetch(
+                    `https://api.github.com/users/${user}`
+                  );
+                  const dados = await response.json();
+                  setNome(dados.name);
+                  console.log("Esse é o nome: ", dados.name);
+                }
+
                 if (valor.length > 2) {
                   appConfig.statusVisibility.visibility = "visible";
                   getNome(valor).then((e) => {
                     if (e) {
-                      setNome(e);
                       setFound(true);
                     } else {
-                      setNome("");
                       setFound(false);
                     }
                   });
                 } else {
-                  setNome("");
                   setFound(true);
                   appConfig.statusVisibility.visibility = "hidden";
                 }
@@ -141,7 +148,6 @@ export default function PaginaInicial() {
                 //através do React e avise quem precisa
 
                 setUsername(valor);
-                console.log("Meu nome de usuário", getNome(valor));
               }}
               fullWidth
               textFieldColors={{
