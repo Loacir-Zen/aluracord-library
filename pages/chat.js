@@ -58,15 +58,19 @@ export default function ChatPage() {
   //   );
   // }
 
-  function handleDeletaMensagem(idMensagem) {
-    // supabaseClient
-    //  .from("mensagens")
-    //  .delete()
-    //  .match({ id: idMensagem })
-    //  .then(({ data }) => {
-    //console.log("Criando mensagem", oQueTaVindoComoResposta);
-    //   setListaDeMensagens([data[0], ...listaDeMensagens]);
-    //  });
+  function handleDeletMensagem(id) {
+    supabaseClient
+      .from("mensagens")
+      .delete()
+      .match({ id: id })
+      .then(({ data }) => {
+        const novaListaDeMensagens = listaDeMensagens.filter(
+          (mensagemAtual) => {
+            return mensagemAtual.id !== data[0].id;
+          }
+        );
+        setListaDeMensagens(novaListaDeMensagens);
+      });
   }
 
   return (
@@ -113,7 +117,7 @@ export default function ChatPage() {
         >
           <MessageList
             mensagens={listaDeMensagens}
-            handleDeletaMensagem={handleDeletaMensagem}
+            handleDeletMensagem={handleDeletMensagem}
           />
           {/* {listaDeMensagens.map((mensagemAtual) => {
                         return (
@@ -267,7 +271,7 @@ function MessageList(props) {
               <Image
                 onClick={(event) => {
                   event.preventDefault();
-                  props.handleDeletaMensagem(mensagem.id);
+                  props.handleDeletMensagem(mensagem.id);
                 }}
                 styleSheet={{
                   width: "20px",
