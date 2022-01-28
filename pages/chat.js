@@ -59,14 +59,14 @@ export default function ChatPage() {
   // }
 
   function handleDeletaMensagem(idMensagem) {
-    supabaseClient
-      .from("mensagens")
-      .delete()
-      .match({ id: idMensagem })
-      .then(({ data }) => {
-        //console.log("Criando mensagem", oQueTaVindoComoResposta);
-        setListaDeMensagens([data[0], ...listaDeMensagens]);
-      });
+    // supabaseClient
+    //  .from("mensagens")
+    //  .delete()
+    //  .match({ id: idMensagem })
+    //  .then(({ data }) => {
+    //console.log("Criando mensagem", oQueTaVindoComoResposta);
+    //   setListaDeMensagens([data[0], ...listaDeMensagens]);
+    //  });
   }
 
   return (
