@@ -1,7 +1,9 @@
 import { Box, Text, TextField, Image, Button } from "@skynexui/components";
 import React from "react";
 import appConfig from "../config.json";
+import { useRouter } from "next/router";
 import { createClient } from "@supabase/supabase-js";
+import { ButtonSendSticker } from "../src/components/ButtonSendSticker";
 
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMxNjE1MSwiZXhwIjoxOTU4ODkyMTUxfQ.j3BnsebwF52f9Wowb-64isuGgv7j__FqNC73czR2BAo";
@@ -9,8 +11,23 @@ const SUPABASE_URL = "https://xetwbojipbfetnfrgomf.supabase.co";
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function ChatPage() {
+  const roteamento = useRouter();
+  const usuarioLogado = roteamento.query.username;
   const [mensagem, setMensagem] = React.useState("");
-  const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
+  const [listaDeMensagens, setListaDeMensagens] = React.useState([
+    //{
+    //  id: 1,
+    //  de: "loacir-zen",
+    //  texto:
+    //    ":sticker: https://www.alura.com.br/imersao-react-4/assets/figurinhas/Figurinha_3.png",
+    //},
+    //{
+    //  id: 2,
+    //  de: "peas",
+    //  texto: "Olá Aluraverso",
+    //},
+  ]);
+  const [nome, setNome] = React.useState("");
 
   React.useEffect(() => {
     supabaseClient
@@ -22,6 +39,13 @@ export default function ChatPage() {
         setListaDeMensagens(data);
       });
   }, []);
+
+  async function getNome(user) {
+    const response = await fetch(`https://api.github.com/users/${user}`);
+    const dados = await response.json();
+    setNome(dados.name);
+    console.log("Esse é o nome: ", dados.name);
+  }
 
   /*
     // Usuário
@@ -37,7 +61,7 @@ export default function ChatPage() {
   function handleNovaMensagem(novaMensagem) {
     const mensagem = {
       //id: listaDeMensagens.length + 1,
-      de: "loacir-zen",
+      de: usuarioLogado,
       texto: novaMensagem,
     };
 
@@ -156,6 +180,13 @@ export default function ChatPage() {
                 backgroundColor: appConfig.theme.colors.neutrals[800],
                 marginRight: "12px",
                 color: appConfig.theme.colors.neutrals[200],
+              }}
+            />
+
+            <ButtonSendSticker
+              onStickerClick={(sticker) => {
+                console.log("Salva esse sticker no banco");
+                handleNovaMensagem(":sticker: " + sticker);
               }}
             />
 
@@ -284,7 +315,12 @@ function MessageList(props) {
                 src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH5NjBw0gKTELUKNmzyo31JR3K6m_Axx2auA&usqp=CAU`}
               />
             </Box>
-            {mensagem.texto}
+            {/*} Condicional: {mensagem.texto.startsWith(":sticker:").toString()} */}
+            {mensagem.texto.startsWith(":sticker:") ? (
+              <Image src={mensagem.texto.replace(":sticker:", "")} />
+            ) : (
+              mensagem.texto
+            )}
           </Text>
         );
       })}
