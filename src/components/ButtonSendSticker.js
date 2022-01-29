@@ -59,8 +59,8 @@ export function ButtonSendSticker(props) {
             position: "absolute",
             // backgroundColor: appConfig.theme.colors.primary[800],
             width: {
-              xs: "100px",
-              sm: "190px",
+              xs: "200px",
+              sm: "290px",
             },
             height: "300px",
             right: "30px",
