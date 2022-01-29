@@ -10,23 +10,22 @@ const SUPABASE_ANON_KEY =
 const SUPABASE_URL = "https://xetwbojipbfetnfrgomf.supabase.co";
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+function escutaMensagensEmTempoReal(adicionaMensagem) {
+  return supabaseClient
+    .from("mensagens")
+    .on("INSERT", (respostaLive) => {
+      adicionaMensagem(respostaLive.new);
+    })
+    .subscribe();
+}
+
+//////Primeiro teste
+
 export default function ChatPage() {
   const roteamento = useRouter();
   const usuarioLogado = roteamento.query.username;
   const [mensagem, setMensagem] = React.useState("");
-  const [listaDeMensagens, setListaDeMensagens] = React.useState([
-    //{
-    //  id: 1,
-    //  de: "loacir-zen",
-    //  texto:
-    //    ":sticker: https://www.alura.com.br/imersao-react-4/assets/figurinhas/Figurinha_3.png",
-    //},
-    //{
-    //  id: 2,
-    //  de: "peas",
-    //  texto: "Olá Aluraverso",
-    //},
-  ]);
+  const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
   const [nome, setNome] = React.useState("");
 
   React.useEffect(() => {
@@ -35,9 +34,29 @@ export default function ChatPage() {
       .select("*")
       .order("id", { ascending: false })
       .then(({ data }) => {
-        console.log("Dados da Consulta: ", data);
+        // console.log('Dados da consulta:', data);
         setListaDeMensagens(data);
       });
+
+    const subscription = escutaMensagensEmTempoReal((novaMensagem) => {
+      console.log("Nova mensagem:", novaMensagem);
+      console.log("listaDeMensagens:", listaDeMensagens);
+      // Quero reusar um valor de referencia (objeto/array)
+      // Passar uma função pro setState
+
+      // setListaDeMensagens([
+      //     novaMensagem,
+      //     ...listaDeMensagens
+      // ])
+      setListaDeMensagens((valorAtualDaLista) => {
+        console.log("valorAtualDaLista:", valorAtualDaLista);
+        return [novaMensagem, ...valorAtualDaLista];
+      });
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   async function getNome(user) {
@@ -60,19 +79,21 @@ export default function ChatPage() {
     */
   function handleNovaMensagem(novaMensagem) {
     const mensagem = {
-      //id: listaDeMensagens.length + 1,
+      // id: listaDeMensagens.length + 1,
       de: usuarioLogado,
       texto: novaMensagem,
     };
 
     supabaseClient
       .from("mensagens")
-      .insert([mensagem])
+      .insert([
+        // Tem que ser um objeto com os MESMOS CAMPOS que você escreveu no supabase
+        mensagem,
+      ])
       .then(({ data }) => {
-        //console.log("Criando mensagem", oQueTaVindoComoResposta);
-        setListaDeMensagens([data[0], ...listaDeMensagens]);
+        console.log("Criando mensagem: ", data);
       });
-    //
+
     setMensagem("");
   }
 
