@@ -162,7 +162,8 @@ export default function ChatPage() {
         >
           <MessageList
             mensagens={listaDeMensagens}
-            handleDeletMensagem={handleDeletMensagem}
+            // handleDeletMensagem={handleDeletMensagem}
+            setListaDeMensagens={setListaDeMensagens}
           />
           {/* {listaDeMensagens.map((mensagemAtual) => {
                         return (
@@ -267,6 +268,20 @@ function Header() {
 }
 
 function MessageList(props) {
+  function handleDeletarMensagem(id) {
+    supabaseClient
+      .from("mensagens")
+      .delete()
+      .match({ id: id })
+      .then(() => {
+        let novaListaDeMensagens = props.mensagens.filter((mensagem) => {
+          if (mensagem.id !== id) {
+            return mensagem;
+          }
+        });
+        props.setListaDeMensagens([...novaListaDeMensagens]);
+      });
+  }
   console.log(props);
   return (
     <Box
@@ -323,7 +338,7 @@ function MessageList(props) {
               <Image
                 onClick={(event) => {
                   event.preventDefault();
-                  props.handleDeletMensagem(mensagem.id);
+                  handleDeletarMensagem(mensagem.id);
                 }}
                 styleSheet={{
                   width: "20px",
