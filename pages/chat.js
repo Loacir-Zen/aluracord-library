@@ -5,10 +5,17 @@ import { useRouter } from "next/router";
 import { createClient } from "@supabase/supabase-js";
 import { ButtonSendSticker } from "../src/components/ButtonSendSticker";
 
+function getRandom() {
+  const min = Math.ceil(1);
+  const max = Math.floor(6);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMxNjE1MSwiZXhwIjoxOTU4ODkyMTUxfQ.j3BnsebwF52f9Wowb-64isuGgv7j__FqNC73czR2BAo";
 const SUPABASE_URL = "https://xetwbojipbfetnfrgomf.supabase.co";
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const imagemLoading = getRandom();
 
 function escutaMensagensEmTempoReal(adicionaMensagem) {
   return supabaseClient
@@ -25,7 +32,14 @@ export default function ChatPage() {
   const roteamento = useRouter();
   const usuarioLogado = roteamento.query.username;
   const [mensagem, setMensagem] = React.useState("");
-  const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
+  const [listaDeMensagens, setListaDeMensagens] = React.useState([
+    {
+      id: 1,
+      de: "loacir-zen",
+      texto: "loacir-zen",
+      hora: "",
+    },
+  ]);
   const [nome, setNome] = React.useState("");
 
   React.useEffect(() => {
@@ -309,6 +323,34 @@ function MessageList(props) {
               },
             }}
           >
+            {mensagem.texto == "loacir-zen" ? (
+              <Box
+                styleSheet={{
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "black",
+                  overflow: "hidden",
+                  position: "absolute",
+                  justifyContent: "center",
+                  top: "0",
+                  left: "0",
+                }}
+              >
+                <Image
+                  styleSheet={{
+                    width: "50%",
+                    position: "relative",
+                    margin: "0 auto",
+                  }}
+                  src={`/images/${imagemLoading}.gif`}
+                />
+              </Box>
+            ) : (
+              ""
+            )}
+
             <Box
               styleSheet={{
                 marginBottom: "8px",
