@@ -100,6 +100,16 @@ export default function PaginaInicial() {
               {appConfig.name}
             </Text>
 
+            <Text
+              variant="body3"
+              styleSheet={{
+                marginBottom: "12px",
+                color: appConfig.theme.colors.neutrals[300],
+              }}
+            >
+              {appConfig.git}
+            </Text>
+
             {/*<input
               type="text"
               value={username}

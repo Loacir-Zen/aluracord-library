@@ -1,4 +1,11 @@
-import { Box, Text, TextField, Image, Button } from "@skynexui/components";
+import {
+  Box,
+  Text,
+  TextField,
+  Image,
+  Button,
+  Icon,
+} from "@skynexui/components";
 import React from "react";
 import appConfig from "../config.json";
 import { useRouter } from "next/router";
@@ -7,7 +14,7 @@ import { ButtonSendSticker } from "../src/components/ButtonSendSticker";
 
 function getRandom() {
   const min = Math.ceil(1);
-  const max = Math.floor(3);
+  const max = Math.floor(5);
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
@@ -330,10 +337,11 @@ function MessageList(props) {
                   flexDirection: "column",
                   width: "100%",
                   height: "100%",
-                  backgroundColor: "black",
+                  //backgroundColor: "black",
                   overflow: "hidden",
                   position: "absolute",
                   justifyContent: "center",
+                  backgroundColor: appConfig.theme.colors.neutrals[700],
                   top: "0",
                   left: "0",
                 }}
@@ -377,20 +385,24 @@ function MessageList(props) {
               >
                 {new Date().toLocaleDateString()}
               </Text>
-              <Image
+
+              <Icon
+                name={"FaTrash"}
+                styleSheet={{
+                  marginLeft: "5px",
+                  width: "20px",
+                  height: "20px",
+                  float: "right",
+                  color: appConfig.theme.colors.primary["950"],
+                  hover: {
+                    color: "white",
+                  },
+                  display: "inline-block",
+                }}
                 onClick={(event) => {
                   event.preventDefault();
                   handleDeletarMensagem(mensagem.id);
                 }}
-                styleSheet={{
-                  width: "20px",
-                  height: "20px",
-                  borderRadius: "50%",
-                  display: "inline-block",
-                  marginRight: "8px",
-                  float: "right",
-                }}
-                src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH5NjBw0gKTELUKNmzyo31JR3K6m_Axx2auA&usqp=CAU`}
               />
             </Box>
             {/*} Condicional: {mensagem.texto.startsWith(":sticker:").toString()} */}
