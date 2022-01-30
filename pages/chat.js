@@ -7,7 +7,7 @@ import { ButtonSendSticker } from "../src/components/ButtonSendSticker";
 
 function getRandom() {
   const min = Math.ceil(1);
-  const max = Math.floor(6);
+  const max = Math.floor(3);
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
